@@ -3,6 +3,7 @@ from rest_framework import viewsets
 from rest_framework import permissions
 from reviews.serializers import UserSerializer, GroupSerializer, ReviewSerializer, BusinessSerializer, CategorySerializer
 from reviews.models import Review, Business, Category
+from django_filters.rest_framework import DjangoFilterBackend
 
 class UserViewSet(viewsets.ModelViewSet):
 	queryset = User.objects.all().order_by('-date_joined')
@@ -27,4 +28,6 @@ class BusinessViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(viewsets.ModelViewSet):
 	queryset = Category.objects.all()
 	serializer_class = CategorySerializer
+	filter_backends = [DjangoFilterBackend]
+	filterset_fields = ['slug']
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly]
