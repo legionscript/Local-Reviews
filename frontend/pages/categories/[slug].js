@@ -1,5 +1,6 @@
 import React from 'react';
 import Layout from '../../components/Layout'
+import AverageReview from '../../components/AverageReview'
 import { Box, Card, CardContent, Grid, Link, makeStyles, Typography } from "@material-ui/core";
 import axios from 'axios'
 import { useRouter } from 'next/router'
@@ -17,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const Category = ({ category }) => {
+const Category = ({ category, averageReviews }) => {
   const classes = useStyles()
   const router = useRouter()
 
@@ -47,7 +48,7 @@ const Category = ({ category }) => {
                 </Grid>
 
                 <Grid item xs={6}>
-                  <Typography variant='h5'>Todo Reviews</Typography>
+                  <AverageReview value={averageReviews[business.url]} />
                   <Typography variant='subtitle1'>{business.hours}</Typography>
                   <Typography variant='subtitle1'>{business.street_address} {business.city}, {business.region} {business.postal_code} {business.country}</Typography>
                 </Grid>
@@ -65,9 +66,27 @@ const Category = ({ category }) => {
 export async function getServerSideProps({ query: {slug} }) {
   const { data } = await axios.get(`http://localhost:8000/categories?slug=${slug}`)
 
+  let avgReviews = {}
+
+  if (data && data.results && data.results[0].business) {
+    for (let i = 0; i < data.results[0].business.length; i++) {
+      let totalReviewsStars = 0;
+      for (let j = 0; j < data.results[0].business[i].reviews.length; j++) {
+        totalReviewsStars = totalReviewsStars + Number(data.results[0].business[i].reviews[j].stars)
+      }
+
+      const inverse = 1 / 2
+
+      avgReviews[data.results[0].business[i].url] = Math.round((totalReviewsStars / data.results[0].business[i].reviews.length) / inverse) * inverse
+    }
+  }
+
+  console.log(avgReviews)
+
   return {
     props: {
-      category: data.results[0] || null
+      category: data.results[0] || null,
+      averageReviews: avgReviews
     }
   }
 }
