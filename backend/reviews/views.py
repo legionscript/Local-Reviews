@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
-from reviews.serializers import UserSerializer, GroupSerializer, ReviewSerializer, BusinessSerializer, CategorySerializer
+from reviews.serializers import UserSerializer, GroupSerializer, ReviewReadSerializer, ReviewWriteSerializer, BusinessReadSerializer, BusinessWriteSerializer, CategoryReadSerializer, CategoryWriteSerializer
 from reviews.models import Review, Business, Category
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -17,17 +17,32 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(viewsets.ModelViewSet):
 	queryset = Review.objects.all()
-	serializer_class = ReviewSerializer
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+	def get_serializer_class(self):
+		if self.request.method == 'PUT' or self.request.method == 'POST':
+			return ReviewWriteSerializer
+		else:
+			return ReviewReadSerializer
 
 class BusinessViewSet(viewsets.ModelViewSet):
 	queryset = Business.objects.all()
-	serializer_class = BusinessSerializer
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+	def get_serializer_class(self):
+		if self.request.method == 'PUT' or self.request.method == 'POST':
+			return BusinessWriteSerializer
+		else:
+			return BusinessReadSerializer
 
 class CategoryViewSet(viewsets.ModelViewSet):
 	queryset = Category.objects.all()
-	serializer_class = CategorySerializer
 	filter_backends = [DjangoFilterBackend]
 	filterset_fields = ['slug']
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+	def get_serializer_class(self):
+		if self.request.method == 'PUT' or self.request.method == 'POST':
+			return CategoryWriteSerializer
+		else:
+			return CategoryReadSerializer
