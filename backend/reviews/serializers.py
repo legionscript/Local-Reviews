@@ -21,7 +21,7 @@ class ReviewReadSerializer(serializers.HyperlinkedModelSerializer):
 class ReviewWriteSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Review
-		fields = '__all__'
+		fields = ['url', 'title', 'content', 'stars', 'business']
 
 class BusinessReadSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
