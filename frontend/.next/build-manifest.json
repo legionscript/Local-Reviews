@@ -29,10 +29,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/business/[slug].js"
     ],
-    "/business/[slug]/reviews/add-review": [
+    "/categories/[slug]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/business/[slug]/reviews/add-review.js"
+      "static/chunks/pages/categories/[slug].js"
+    ],
+    "/next/dist/pages/_error": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/next/dist/pages/_error.js"
     ]
   },
   "ampFirstPages": []
