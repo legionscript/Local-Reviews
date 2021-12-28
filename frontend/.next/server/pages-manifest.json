@@ -2,7 +2,6 @@
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
   "/_error": "pages/_error.js",
-  "/categories/[slug]": "pages/categories/[slug].js",
-  "/business/[slug]": "pages/business/[slug].js",
-  "/next/dist/pages/_error": "pages/next/dist/pages/_error.js"
+  "/account/login": "pages/account/login.js",
+  "/": "pages/index.js"
 }

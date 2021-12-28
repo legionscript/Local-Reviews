@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { AppBar, Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, makeStyles, Toolbar, Typography } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 import { useRouter } from 'next/router'
 import HomeIcon from '@material-ui/icons/Home'
+import AuthenticationContext from '../context/AuthenticationContext'
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -23,6 +25,8 @@ const Nav = (props) => {
   const classes = useStyles()
   const [toggle, setToggle] = useState(false)
   const router = useRouter()
+
+  const {user} = useContext(AuthenticationContext)
 
   const toggleDrawer = (value) => (event) => {
   	if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -51,6 +55,18 @@ const Nav = (props) => {
     							<ListItemIcon><HomeIcon /></ListItemIcon>
     							<ListItemText primary='Home' />
     						</ListItem>
+
+    						{user ? (
+									<ListItem button onClick={() => router.push('/logout')}>
+	    							<ListItemIcon><AccountCircleIcon /></ListItemIcon>
+	    							<ListItemText primary='Sign Out' />
+	    						</ListItem>
+    						) : (
+	    						<ListItem button onClick={() => router.push('/login')}>
+	    							<ListItemIcon><AccountCircleIcon /></ListItemIcon>
+	    							<ListItemText primary='Sign In' />
+	    						</ListItem>
+    						)}
     					</List>
     				</div>
     				</Drawer>

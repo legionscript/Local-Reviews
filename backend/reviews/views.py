@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
+from rest_framework.generics import RetrieveAPIView
 from rest_framework import permissions
 from reviews.serializers import UserSerializer, GroupSerializer, ReviewReadSerializer, ReviewWriteSerializer, BusinessReadSerializer, BusinessWriteSerializer, CategoryReadSerializer, CategoryWriteSerializer
 from reviews.models import Review, Business, Category
@@ -46,3 +47,10 @@ class CategoryViewSet(viewsets.ModelViewSet):
 			return CategoryWriteSerializer
 		else:
 			return CategoryReadSerializer
+
+class UserAPIView(RetrieveAPIView):
+	permission_classes = [permissions.IsAuthenticated]
+	serializer_class = UserSerializer
+
+	def get_object(self):
+		return self.request.user
