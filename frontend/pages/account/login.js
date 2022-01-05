@@ -76,7 +76,7 @@ export default function LoginPage() {
       					</div>
 
       					<div className={classes.linkContainer}>
-      						<Link href='account/register'>
+      						<Link href='/account/register'>
       							<a className={classes.link}>Don't have an account? Sign Up</a>
       						</Link>
       					</div>
