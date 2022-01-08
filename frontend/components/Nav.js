@@ -26,7 +26,7 @@ const Nav = (props) => {
   const [toggle, setToggle] = useState(false)
   const router = useRouter()
 
-  const {user} = useContext(AuthenticationContext)
+  const {user, logout} = useContext(AuthenticationContext)
 
   const toggleDrawer = (value) => (event) => {
   	if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -34,6 +34,11 @@ const Nav = (props) => {
   	}
 
   	setToggle(value)
+  }
+
+  const handleLogout = async e => {
+  	e.preventDefault()
+  	await logout()
   }
 
   return (
@@ -57,15 +62,22 @@ const Nav = (props) => {
     						</ListItem>
 
     						{user ? (
-									<ListItem button onClick={() => router.push('/logout')}>
+									<ListItem button onClick={handleLogout}>
 	    							<ListItemIcon><AccountCircleIcon /></ListItemIcon>
 	    							<ListItemText primary='Sign Out' />
 	    						</ListItem>
     						) : (
-	    						<ListItem button onClick={() => router.push('/login')}>
-	    							<ListItemIcon><AccountCircleIcon /></ListItemIcon>
-	    							<ListItemText primary='Sign In' />
-	    						</ListItem>
+    							<>
+		    						<ListItem button onClick={() => router.push('/account/login')}>
+		    							<ListItemIcon><AccountCircleIcon /></ListItemIcon>
+		    							<ListItemText primary='Sign In' />
+		    						</ListItem>
+
+		    						<ListItem button onClick={() => router.push('/account/register')}>
+		    							<ListItemIcon><AccountCircleIcon /></ListItemIcon>
+		    							<ListItemText primary='Register' />
+		    						</ListItem>
+	    						</>
     						)}
     					</List>
     				</div>
