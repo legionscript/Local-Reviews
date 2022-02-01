@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react'
+import { createContext, useState, useEffect } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 
@@ -10,6 +10,8 @@ export const AuthenticationProvider = ({ children }) => {
 	const [error, setError] = useState(null)
 
 	const router = useRouter()
+
+	useEffect(() => checkIfUserLoggedIn(), [])
 
 	// Login User
 	const login = async({username, password}) => {
@@ -111,6 +113,31 @@ export const AuthenticationProvider = ({ children }) => {
 	      console.error('Error', error.message);
 	      setError('Something went wrong')
 	      return
+		}
+	}
+
+	const checkIfUserLoggedIn = async () => {
+		try {
+			// api request to api/user in nextjs
+			const { data } = await axios.post('http://localhost:3000/api/user')
+
+			// set user and access token in state
+			setUser(data.user)
+			setAccessToken(data.access)
+		} catch(error) {
+			if (error.response & error.response.data) {
+		  		setError(error.response.data.message)
+		  		return      
+		    } else if (error.request) {
+			    setError('Something went wrong')
+			    return  
+		    } else {
+				setError('Something went wrong')
+				return
+		    }
+		    console.error('Error', error.message);
+		    setError('Something went wrong')
+		    return
 		}
 	}
 
