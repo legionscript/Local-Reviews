@@ -1,5 +1,5 @@
-import { useState, useContext } from 'react'
-import { Button, Card, CardContent, makeStyles, TextField, Typography } from '@material-ui/core'
+import { useState, useContext, useEffect } from 'react'
+import { Button, Card, CardContent, makeStyles, TextField, Typography, Snackbar } from '@material-ui/core'
 import Layout from '../../components/Layout'
 import AuthenticationContext from '../../context/AuthenticationContext'
 import axios from 'axios'
@@ -45,18 +45,41 @@ export default function LoginPage() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
+  const [open, setOpen] = useState(false)
+  const [errorMessage, setErrorMessage] = useState(null)
+
+  const { login, error, clearError } = useContext(AuthenticationContext)
+
+  useEffect(() => {
+    if (error) {
+      setErrorMessage(error)
+      setOpen(true)
+      clearError()
+    }
+  }, [error])
+
   const classes = useStyles()
   const router = useRouter()
-
-  const {login} = useContext(AuthenticationContext)
 
   const submitHandler = e => {
   	e.preventDefault();
   	login({username, password})
   }
 
+  const handleClose = () => {
+    setOpen(false)
+  }
+
   return (
     <Layout>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={open}
+        onClose={handleClose}
+        autoHideDuration={6000}
+        message={errorMessage}
+        key={'top_center'}
+      />
       <div className={classes.root}>
       	<div className={classes.form}>
       		<Typography variant='h3' className={classes.title}>Login</Typography>

@@ -1,5 +1,5 @@
-import { useState, useContext } from 'react'
-import { Button, Card, CardContent, makeStyles, TextField, Typography } from '@material-ui/core'
+import { useState, useContext, useEffect } from 'react'
+import { Button, Card, CardContent, makeStyles, TextField, Typography, Snackbar } from '@material-ui/core'
 import Layout from '../../components/Layout'
 import AuthenticationContext from '../../context/AuthenticationContext'
 import axios from 'axios'
@@ -47,22 +47,42 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('')
   const [password2, setPassword2] = useState('')
 
+  const [open, setOpen] = useState(false)
+  const [errorMessage, setErrorMessage] = useState(null)
+
   const classes = useStyles()
   const router = useRouter()
 
-  const {register} = useContext(AuthenticationContext)
+  const {register, error, clearError} = useContext(AuthenticationContext)
+
+  useEffect(() => {
+    if (error) {
+      setErrorMessage(error)
+      setOpen(true)
+      clearError()
+    }
+  }, [error])
 
   const submitHandler = e => {
   	e.preventDefault();
-    if (password !== password2) {
-      console.error('passwords do not match')
-    }
     // console.log({username, email, password, password2})
-  	register({username, email, password})
+  	register({username, email, password, password2})
+  }
+
+  const handleClose = () => {
+    setOpen(false)
   }
 
   return (
     <Layout>
+      <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={open}
+          onClose={handleClose}
+          autoHideDuration={6000}
+          message={errorMessage}
+          key={'top_center'}
+        />
       <div className={classes.root}>
       	<div className={classes.form}>
       		<Typography variant='h3' className={classes.title}>Register</Typography>

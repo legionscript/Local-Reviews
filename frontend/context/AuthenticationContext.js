@@ -40,7 +40,7 @@ export const AuthenticationProvider = ({ children }) => {
 
 			router.push('/')
 		} catch(error) {
-		  if (error.response & error.response.data) {
+		  if (error.response && error.response.data) {
 		  	setError(error.response.data.message)
 		  	return      
 	      } else if (error.request) {
@@ -48,15 +48,22 @@ export const AuthenticationProvider = ({ children }) => {
 		    return  
 	      } else {
 			setError('Something went wrong')
+			console.log(error)
 			return
 	      }
 	      console.error('Error', error.message);
 	      setError('Something went wrong')
+	      console.log(error)
 	      return
 		}
 	}
 
-	const register = async ({ username, email, password }) => {
+	const register = async ({ username, email, password, password2 }) => {
+		if (password !== password2) {
+			setError('Passwords do not match')
+			return
+		}
+
 		const config = {
 			headers: {
 				'Accept': 'application/json',
@@ -75,7 +82,8 @@ export const AuthenticationProvider = ({ children }) => {
 			await axios.post('http://localhost:3000/api/register', body, config)
 			login({ username, password })
 		} catch(error) {
-		  if (error.response & error.response.data) {
+			console.log(error.response.data.message)
+		  if (error.response && error.response.data) {
 		  	setError(error.response.data.message)
 		  	return      
 	      } else if (error.request) {
@@ -100,7 +108,7 @@ export const AuthenticationProvider = ({ children }) => {
 			setUser(null)
 			setAccessToken(null)
 		} catch(error) {
-		  if (error.response & error.response.data) {
+		  if (error.response && error.response.data) {
 		  	setError(error.response.data.message)
 		  	return      
 	      } else if (error.request) {
@@ -126,23 +134,27 @@ export const AuthenticationProvider = ({ children }) => {
 			setAccessToken(data.access)
 		} catch(error) {
 			if (error.response & error.response.data) {
-		  		setError(error.response.data.message)
+		  		// setError(error.response.data.message)
 		  		return      
 		    } else if (error.request) {
-			    setError('Something went wrong')
+			    // setError('Something went wrong')
 			    return  
 		    } else {
-				setError('Something went wrong')
+				// setError('Something went wrong')
 				return
 		    }
-		    console.error('Error', error.message);
-		    setError('Something went wrong')
+		    // console.error('Error', error.message);
+		    // setError('Something went wrong')
 		    return
 		}
 	}
 
+	const clearError = () => {
+		setError(null)
+	}
+
 	return (
-		<AuthenticationContext.Provider value={{ user, accessToken, error, login, register, logout }}>
+		<AuthenticationContext.Provider value={{ user, accessToken, error, login, register, logout, clearError }}>
 			{children}
 		</AuthenticationContext.Provider>
 	)
